@@ -20,16 +20,33 @@ install.packages("drake")
 
 Next you need to open an R session with working directory set to the root of the project.
 
-This routine loads multiple packages which are found in `R/packages.R`, so make sure to successfully install and load them before running drake.
+This routine loads multiple packages which are found in `R/packages.R`, **so make sure to successfully install and load them before running drake** with the code below.
 
-Then, to reproduce the data analyses and figures, do:
+To reproduce particular targets outlined in `R/plan.R`, do e.g.:
+
+```r
+source("_drake.R")
+drake::make(plan, targets = c("fig_1_pdf", "fig_2_pdf", "ed_table_2"), lock_envir = FALSE)
+```
+
+This will create Figures 1 and 2, and Extended Data Table 2 as presented in the manuscript along with all its dependencies. All output will be automatically placed in a directory called `output` (it is going to be automatically created for you).
+
+The main Bayesian model needed to create Figures 1 and 2 is called `stan_output` in `R/plan.R`, and to access it within an R session, simply run:
+
+```r
+source("_drake.R")
+drake::make(plan, targets = "stan_output", lock_envir = FALSE)
+drake::loadd(stan_output)
+```
+
+This may take 20-30 min depending on your computing power. Alternatively, to reproduce all data analyses / figures / tables, and then make them available within an R session, do:
 
 ```r
 source("make.R")
 drake::loadd()
 ```
 
-All output will be automatically placed in a directory called `output` (it is going to be automatically created for you).
+Again, all output will be automatically placed in a directory called `output` (it is going to be automatically created for you).
 
 Also notice that all the combined Bayesian models in this paper may take a few hours to run on a regular computer.
 
