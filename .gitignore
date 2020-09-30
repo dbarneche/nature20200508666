@@ -1,0 +1,16 @@
+.rstudio/
+.drake/
+output/
+ignore/
+kitematic/
+
+.DS_Store
+*.Rapp.history
+*.Rhistory
+*.RData
+*tmp*
+*.rda
+*.rds
+TODO.md
+*~$*
+./*.pdf
