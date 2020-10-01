@@ -18,41 +18,20 @@ make_proto_ed_tab_1 <- function(brmsmodel, sgnf = 2, title) {
   ed_tab <- rbind(empty,
                   ed_tab) %>%
     as.matrix()
-  colnames(ed_tab) <- paste0("\\textbf{",
-                             c("Mean", "2.5\\%", "97.5\\%",
-                               "Eff", "$\\widehat{R}$"),
-                             "}")
   rownames(ed_tab) <- c(title,
-                        "\\textbf{Pond-level (SD)}",
-                        paste0("\\textbf{", c("Before, Ambient",
-                                              "After, Ambient",
-                                              "Before, Warmed",
-                                              "After, Warmed"),
-                               "}"))
+                        "Pond-level (SD)",
+                        c("Before, Ambient",
+                          "After, Ambient",
+                          "Before, Warmed",
+                          "After, Warmed"))
   ed_tab
 }
 
 make_ed_table_1 <- function(ba_co2, ba_nutrients) {
-ed_tab_1 <- rbind(make_proto_ed_tab_1(ba_nutrients$NO2_uM, title = "\\textit{\\textbf{\\ce{NO2^-}}}"),
-                  make_proto_ed_tab_1(ba_nutrients$NO3_uM, title = "\\textit{\\textbf{\\ce{NO3^-}}}"),
-                  make_proto_ed_tab_1(ba_nutrients$NH3_uM, title = "\\textit{\\textbf{\\ce{NH4^+}}}"),
-                  make_proto_ed_tab_1(ba_co2, sgnf = 0, "\\textit{\\textbf{CO\\textsubscript{2} influx}}"))
-
-ed_tab_1 <- ed_tab_1 %>%
-    knitr::kable(format = "latex", escape = FALSE)
-  ed_tab_1[[1]] <- gsub("l|l|l|l|l|l", "llllll",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1[[1]] <- gsub("1\\\\\n\\hline\n &", "1\\\\\n &",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1[[1]] <- gsub("1\\\\\n\\hline\n\\textbf{", "1\\\\\n\\textbf{",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1[[1]] <- gsub("& \\\\\n\\hline\n\\textbf{", "& \\\\\n\\textbf{",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1[[1]] <- gsub("& \\\\\n\\hline\n\\textit{", "& \\\\\n\\textit{",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1[[1]] <- gsub("& \\\\\n\\hline\n\\textbf{", "& \\\\\n\\textbf{",
-                          ed_tab_1[[1]], fixed = TRUE)
-  ed_tab_1
+  rbind(make_proto_ed_tab_1(ba_nutrients$NO2_uM, title = "NO2-"),
+        make_proto_ed_tab_1(ba_nutrients$NO3_uM, title = "NO3-"),
+        make_proto_ed_tab_1(ba_nutrients$NH3_uM, title = "NH4+"),
+        make_proto_ed_tab_1(ba_co2, sgnf = 0, "CO_2 influx"))
 }
 
 make_ed_table_2 <- function(stan_output) {
@@ -85,48 +64,20 @@ make_ed_table_2 <- function(stan_output) {
     out
   }, model = stan_output)
   out <- do.call("cbind.data.frame", group_tables)
-  row.names(out) <- paste0("\\textbf{",
-                           c("$\\overline{\\textrm{ln}{\\kappa}_a}$ (amb)",
-                             "$\\overline{{\\kappa}_e\'}$ (amb)",
-                             "$\\overline{\\phi\'}$ (amb)",
-                             "$\\overline{\\textrm{ln}{\\kappa}_a}$ (war)",
-                             "$\\overline{{\\kappa}_e\'}$ (war)",
-                             "$\\overline{\\phi\'}$ (war)",
-                             "$\\sigma$",
-                             "${\\sigma}_{\\textrm{ln}\\Delta{\\kappa_a}_j}$",
-                             "${\\sigma}_{\\Delta{\\kappa_e\'}_j}$",
-                             "${\\sigma}_{\\Delta\\textrm{ln}\\phi_j}$",
-                             "${\\sigma}_{\\Delta{\\phi\'}_j}$"), "}")
-  ed_tab_2 <- out %>%
+  row.names(out) <- c("ln_k_a (amb)",
+                      "logit_ke (amb)",
+                      "logit_phi (amb)",
+                      "ln_k_a (war)",
+                      "logit_ke (war)",
+                      "logit_phi (war)",
+                      "sigma$",
+                      "sigma_ln_Delta_k_a$",
+                      "sigma_Delta_logit_ke$",
+                      "sigma_Delta_ln_phi$",
+                      "sigma_Delta_logit_phi")
+  out %>%
     dplyr::mutate(Parameter = row.names(.)) %>%
-    dplyr::select(Parameter, tidyselect::everything()) %>%
-    knitr::kable(format = "latex", escape = FALSE) %>%
-    kableExtra::column_spec(1, width = "2cm") %>%
-    kableExtra::add_header_above(c(" ", "Phytoplankton" = 5, "Zooplankton" = 5))
-  ed_tab_2[[1]] <- sub("Parameter & phytoplankton.mean & phytoplankton.2.5% & phytoplankton.97.5% & phytoplankton.n_eff & phytoplankton.Rhat & zooplankton.mean & zooplankton.2.5% & zooplankton.97.5% & zooplankton.n_eff & zooplankton.Rhat",
-                         paste0("\\textbf{",
-                                c("Parameter",
-                                  rep(c("Mean",
-                                        "2.5\\%",
-                                        "97.5\\%",
-                                        "Eff",
-                                        "$\\widehat{R}$"),
-                                      2)),
-                                "}",
-                                collapse = " & "),
-                         ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- sub("Phytoplankton", "\\textbf{Phytoplankton}",
-                         ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- sub("Zooplankton", "\\textbf{Zooplankton}",
-                         ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- gsub("1\\\\\n\\hline\n\\textbf{$", "1\\\\\n\\textbf{$",
-                          ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- gsub("-\\\\\n\\hline\n\\textbf{$", "-\\\\\n\\textbf{$",
-                          ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- gsub("|l|l|l|l|l|l|l|l|l|l", "llllllllll",
-                          ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2[[1]] <- gsub("{c|}", "{c}", ed_tab_2[[1]], fixed = TRUE)
-  ed_tab_2
+    dplyr::select(Parameter, tidyselect::everything())
 }
 
 make_sp_table_1 <- function(resid_brm_model) {
@@ -134,33 +85,23 @@ make_sp_table_1 <- function(resid_brm_model) {
     sprintf(paste0("%.", precision, "f"), round(value, precision))
   }
 
-  s_tab_1 <- plyr::ldply(resid_brm_model, function(x) {
+  plyr::ldply(resid_brm_model, function(x) {
     y <- data.frame(brms::fixef(x))
     for (i in seq_len(ncol(y))) {
       y[, i] <- rounded(y[, i], 2)
     }
     rownames(y) <- c("Intercept",
-                     "\\ce{NO2^-} slope",
-                     "\\ce{NO3^-} slope",
-                     "\\ce{NH4^+} slope")
+                     "NO2- slope",
+                     "NO3- slope",
+                     "NH4+ slope")
     y <- tibble::rownames_to_column(y, "Parameters")
-    names(y) <- paste0("\\textbf{",
-                       c("Parameters", "Estimate", "",
-                         "2.5\\% C.I.", "97.5\\% C.I."),
-                       "}")
+    names(y) <- c("Parameters", "Estimate", "",
+                  "2.5% C.I.", "97.5% C.I.")
     y[, c(1:2, 4:5)]
   }) %>%
-    dplyr::rename(`\\textbf{Taxon}` = sample) %>%
-    dplyr::mutate(`\\textbf{Taxon}` = c("\\textbf{Phytoplankton}",
-                                        "", "", "",
-                                        "\\textbf{Zooplankton}",
-                                        "", "", "")) %>%
-    knitr::kable(format = "latex", escape = FALSE) %>%
-    kableExtra::column_spec(1, width = "3cm")
-  s_tab_1[[1]] <- gsub("\\\\\n\\hline\n & N", "\\\\\n & N",
-                       s_tab_1[[1]], fixed = TRUE)
-  s_tab_1[[1]] <- gsub("p{3cm}|l|l|l|l",
-                       "L{3cm}C{3cm}C{2cm}C{2cm}C{2cm}",
-                       s_tab_1[[1]], fixed = TRUE)
-  s_tab_1
+    dplyr::rename(Taxon = sample) %>%
+    dplyr::mutate(Taxon = c("Phytoplankton",
+                            "", "", "",
+                            "Zooplankton",
+                            "", "", ""))
 }
