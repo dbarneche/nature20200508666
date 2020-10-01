@@ -11,6 +11,10 @@ read_file <- function(...) {
   read.csv(..., header = TRUE, stringsAsFactors = FALSE)
 }
 
+chemf <- function(...) {
+  CHNOSZ::expr.species(...)
+}
+
 make_cn_data <- function(data) {
   data %>%
     dplyr::mutate(C_molar = C_ug * 1e-6 / 12.0107,

@@ -501,12 +501,15 @@ ed_fig_2 <- function(data, my_cols_treatment) {
   names(my_cols_treatment) <- c("H", "A", "C")
 
   no2 <- unique_ggplot(data, "NO2_uM", my_cols_treatment,
-                       substitute(mu * "mol " * "NO"[2^"-"] * " L"^-1),
+                       substitute(mu * "mol " * a * " L"^-1,
+                                  list(a = chemf("NO2-"))),
                        leg = TRUE)
   no3 <- unique_ggplot(data, "NO3_uM", my_cols_treatment,
-                       substitute(mu * "mol " * "NO"[3^"-"] * " L"^-1))
+                       substitute(mu * "mol " * a * " L"^-1,
+                                  list(a = chemf("NO3-"))))
   nh4 <- unique_ggplot(data, "NH3_uM", my_cols_treatment,
-                       substitute(mu * "mol " * "NH"[4^"+"] * " L"^-1))
+                       substitute(mu * "mol " * a * " L"^-1,
+                                  list(a = chemf("NH4+"))))
   gridExtra::grid.arrange(no2, no3, nh4, ncol = 3)
 }
 

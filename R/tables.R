@@ -33,9 +33,9 @@ make_proto_ed_tab_1 <- function(brmsmodel, sgnf = 2, title) {
 }
 
 make_ed_table_1 <- function(baci_co2, baci_nutrients) {
-ed_tab_1 <- rbind(make_proto_ed_tab_1(baci_nutrients$NO2_uM, title = "\\textit{\\textbf{NO\\textsubscript{2\\textsuperscript{-}}}}"),
-                  make_proto_ed_tab_1(baci_nutrients$NO3_uM, title = "\\textit{\\textbf{NO\\textsubscript{3\\textsuperscript{-}}}}"),
-                  make_proto_ed_tab_1(baci_nutrients$NH3_uM, title = "\\textit{\\textbf{NH\\textsubscript{4\\textsuperscript{+}}}}"),
+ed_tab_1 <- rbind(make_proto_ed_tab_1(baci_nutrients$NO2_uM, title = "\\textit{\\textbf{\\ce{NO2^-}}}"),
+                  make_proto_ed_tab_1(baci_nutrients$NO3_uM, title = "\\textit{\\textbf{\\ce{NO3^-}}}"),
+                  make_proto_ed_tab_1(baci_nutrients$NH3_uM, title = "\\textit{\\textbf{\\ce{NH4^+}}}"),
                   make_proto_ed_tab_1(baci_co2, sgnf = 0, "\\textit{\\textbf{CO\\textsubscript{2} influx}}"))
 
 ed_tab_1 <- ed_tab_1 %>%
@@ -140,9 +140,9 @@ make_sp_table_1 <- function(resid_brm_model) {
       y[, i] <- rounded(y[, i], 2)
     }
     rownames(y) <- c("Intercept",
-                     "NO\\textsubscript{2\\textsuperscript{-}} slope",
-                     "NO\\textsubscript{3\\textsuperscript{-}} slope",
-                     "NH\\textsubscript{4\\textsuperscript{+}} slope")
+                     "\\ce{NO2^-} slope",
+                     "\\ce{NO3^-} slope",
+                     "\\ce{NH4^+} slope")
     y <- tibble::rownames_to_column(y, "Parameters")
     names(y) <- paste0("\\textbf{",
                        c("Parameters", "Estimate", "",

@@ -1,5 +1,6 @@
 library(drake)
 library(rmarkdown)
+library(bookdown)
 library(tinytex)
 library(kableExtra)
 library(knitr)
@@ -21,6 +22,7 @@ library(parallel)
 library(ggplot2)
 library(bayesplot)
 library(ggsci)
+library(CHNOSZ)
 # for LoLinR
 # use function "install_github"
 # from the remotes package

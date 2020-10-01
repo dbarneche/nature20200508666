@@ -1,4 +1,4 @@
-plan  <-  drake_plan(
+plan  <-  drake::drake_plan(
   # Data -------------------------------------------------
   data = read_file("data/data.csv"),
   control_data = read_file("data/control_data.csv"),
@@ -102,26 +102,20 @@ plan  <-  drake_plan(
                                  zoo_png, my_cols_treatment),
   sp_fig_1_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_1.pdf"),
                                        fig_out_folder, baci_nutrients, "NO2_uM",
-                                       substitute(mu *
-                                                    "mol " *
-                                                    "NO"[2^"-"] *
-                                                    " L"^-1),
+                                       substitute(mu * "mol " * a * " L"^-1,
+                                                  list(a = chemf("NO2-"))),
                                        my_cols_treatment),
   sp_fig_2_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_2.pdf"),
                                        fig_out_folder,
                                        baci_nutrients, "NO3_uM",
-                                       substitute(mu *
-                                                  "mol " *
-                                                  "NO"[3^"-"] *
-                                                  " L"^-1),
+                                       substitute(mu * "mol " * a * " L"^-1,
+                                                  list(a = chemf("NO3-"))),
                                        my_cols_treatment),
   sp_fig_3_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_3.pdf"),
                                        fig_out_folder,
                                        baci_nutrients, "NH3_uM",
-                                       substitute(mu *
-                                                  "mol " *
-                                                  "NH"[4^"+"] *
-                                                  " L"^-1),
+                                       substitute(mu * "mol " * a * " L"^-1,
+                                                  list(a = chemf("NO4+"))),
                                        my_cols_treatment),
   sp_fig_4_pdf = make_sp_fig_4(file_out("output/figures/sp_fig_4.pdf"),
                                fig_out_folder, baci_co2,
@@ -147,15 +141,18 @@ plan  <-  drake_plan(
   sp_fig_9_pdf = make_sp_fig_9_11(file_out("output/figures/sp_fig_9.pdf"),
                                   fig_out_folder, resid_plot_data, "NO2_uM",
                                   my_cols_group,
-                                  substitute(mu * "mol " * "NO"[2^"-"] * " L"^-1)),
+                                  substitute(mu * "mol " * a * " L"^-1,
+                                             list(a = chemf("NO2-")))),
   sp_fig_10_pdf = make_sp_fig_9_11(file_out("output/figures/sp_fig_10.pdf"),
                                    fig_out_folder, resid_plot_data, "NO3_uM",
                                    my_cols_group,
-                                   substitute(mu * "mol " * "NO"[3^"-"] * " L"^-1)),
+                                   substitute(mu * "mol " * a * " L"^-1,
+                                              list(a = chemf("NO3-")))),
   sp_fig_11_pdf = make_sp_fig_9_11(file_out("output/figures/sp_fig_11.pdf"),
                                    fig_out_folder, resid_plot_data, "NH3_uM",
                                    my_cols_group,
-                                   substitute(mu * "mol " * "NH"[4^"+"] * " L"^-1)),
+                                   substitute(mu * "mol " * a * " L"^-1,
+                                              list(a = chemf("NH4+")))),
 
   # Tables -----------------------------------------------
   ed_table_1 = make_ed_table_1(baci_co2, baci_nutrients),
