@@ -323,7 +323,7 @@ fig_3 <- function(data, phy_png, zoo_png, my_cols_treatment) {
           axis.text.x = element_text(size = 10, vjust = -1, hjust = 0.5),
           axis.text.y = element_text(size = 10),
           panel.grid = element_blank()) +
-    scale_x_discrete(expand = c(1, -0.5), labels = c("A", "W")) +
+    scale_x_discrete(expand = c(1, -0.5), labels = c("Ambient", "Warmed")) +
     scale_y_continuous(limits = c(1.8, 10.7), expand = c(0, 0),
                        breaks = c(log(8), log(50), log(400),
                                   log(3e3), log(22e3)),
@@ -412,7 +412,7 @@ internal_ed_fig_1d <- function(physchem_data, my_cols_treatment) {
                         values = rev(my_cols_treatment)) +
       scale_shape_manual(name = "Treatment",
                          labels = c("Ambient", "Warmed"),
-                         values = c(21, 22))
+                         values = c(24, 25))
   }
 
   pdosat <- make_bef_aft_data(physchem_data, "DOsat") %>%
@@ -474,7 +474,8 @@ ed_fig_2 <- function(data, my_cols_treatment) {
                        conf = se * 1.96)
     ggplot(data = data, mapping = aes(x = sample_date,
                                       y = mean,
-                                      fill = treatment)) +
+                                      fill = treatment,
+                                      shape = treatment)) +
       geom_errorbar(mapping = aes(ymax = mean + conf,
                                   ymin = ifelse(mean - conf < 0,
                                                 0,
@@ -483,8 +484,7 @@ ed_fig_2 <- function(data, my_cols_treatment) {
                     color = "black",
                     lwd = 0.3,
                     position = position_dodge(width = 1)) +
-      geom_point(shape = 21,
-                 size = 2,
+      geom_point(size = 2,
                  position = position_dodge(width = 1)) +
       geom_vline(mapping = aes(xintercept = as.Date("2013-07-16")),
                  color = "black",
@@ -493,6 +493,9 @@ ed_fig_2 <- function(data, my_cols_treatment) {
       scale_fill_manual(values = my_cols_treatment,
                         labels = c("Ambient", "Control", "Warmed"),
                         name = "Treatment") +
+      scale_shape_manual(values = c(24, 23, 25),
+                         labels = c("Ambient", "Control", "Warmed"),
+                         name = "Treatment") +
       ylab(my_ylab) +
       xlab("Sampling date (2013)") +
       my_theme(leg)
@@ -798,7 +801,8 @@ ed_fig_7 <- function(community_data_2012, community_data_2016,
            y = expression(log[10]~Organism~mass~(µg~C))) +
       theme_classic() +
       theme(plot.title = element_text(face = "bold")) +
-      ggtitle(title)
+      ggtitle(title) +
+      scale_x_discrete(labels = c("Ambient", "Warmed"))
   }
 
   ed_fig_7_nmds <- function(data, my_cols_treatment, tlab) {
@@ -1000,7 +1004,7 @@ ed_fig_10 <- function(data, phy_png, zoo_png, my_cols_treatment) {
           axis.text.x = element_text(size = 10, vjust = -1, hjust = 0.5),
           axis.text.y = element_text(size = 10),
           panel.grid = element_blank()) +
-    scale_x_discrete(expand = c(1, -0.5), labels = c("A", "W")) +
+    scale_x_discrete(expand = c(1, -0.5), labels = c("Ambient", "Warmed")) +
     scale_y_continuous(limits = c(0.5, 8.5), expand = c(0, 0),
                        breaks = c(log(8), log(50), log(400),
                                   log(3e3)),
@@ -1072,7 +1076,7 @@ ed_fig_11 <- function(data, phy_png, zoo_png, my_cols_treatment) {
           axis.text.y = element_text(size = 10),
           panel.grid = element_blank()) +
     scale_y_continuous(trans = "log10", limits = c(3, 25), expand = c(0, 0)) +
-    scale_x_discrete(expand = c(1, -0.5), labels = c("A", "W"))
+    scale_x_discrete(expand = c(1, -0.5), labels = c("Ambient", "Warmed"))
 
   a$coordinates$clip <- "off"
 
