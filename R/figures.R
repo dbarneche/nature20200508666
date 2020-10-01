@@ -793,7 +793,7 @@ ed_fig_7 <- function(community_data_2012, community_data_2016,
                  show.legend = FALSE) +
       scale_colour_manual(values = rep("black", 4)) +
       scale_fill_manual(values = cols) +
-      scale_shape_manual(values = c(21, 22)) +
+      scale_shape_manual(values = c(24, 25)) +
       labs(x = "Treatment",
            y = expression(log[10]~Organism~mass~(µg~C))) +
       theme_classic() +
