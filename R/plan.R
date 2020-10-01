@@ -39,8 +39,8 @@ plan  <-  drake::drake_plan(
   diff_eff = calculate_diffs(posterior_efficiencies),
   diff_kas = calculate_diffs(posterior_kas, decline = FALSE),
   diff_kes = calculate_diffs(posterior_kes, decline = FALSE),
-  baci_co2 = run_baci_co2(co2_data),
-  baci_nutrients = run_baci_nutrients(nutrients),
+  ba_co2 = run_ba_co2(co2_data),
+  ba_nutrients = run_ba_nutrients(nutrients),
   permanova_community_2012 = run_permanova_community(community_data_2012),
   permanova_community_2016 = run_permanova_community(community_data_2016),
   resid_brm_model = run_residual_model(data, nutrients, stan_output),
@@ -101,24 +101,24 @@ plan  <-  drake::drake_plan(
                                  fig_out_folder, cn_pond_stats, phy_png,
                                  zoo_png, my_cols_treatment),
   sp_fig_1_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_1.pdf"),
-                                       fig_out_folder, baci_nutrients, "NO2_uM",
+                                       fig_out_folder, ba_nutrients, "NO2_uM",
                                        substitute(mu * "mol " * a * " L"^-1,
                                                   list(a = chemf("NO2-"))),
                                        my_cols_treatment),
   sp_fig_2_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_2.pdf"),
                                        fig_out_folder,
-                                       baci_nutrients, "NO3_uM",
+                                       ba_nutrients, "NO3_uM",
                                        substitute(mu * "mol " * a * " L"^-1,
                                                   list(a = chemf("NO3-"))),
                                        my_cols_treatment),
   sp_fig_3_pdf = make_sp_fig_inorganic(file_out("output/figures/sp_fig_3.pdf"),
                                        fig_out_folder,
-                                       baci_nutrients, "NH3_uM",
+                                       ba_nutrients, "NH3_uM",
                                        substitute(mu * "mol " * a * " L"^-1,
                                                   list(a = chemf("NO4+"))),
                                        my_cols_treatment),
   sp_fig_4_pdf = make_sp_fig_4(file_out("output/figures/sp_fig_4.pdf"),
-                               fig_out_folder, baci_co2,
+                               fig_out_folder, ba_co2,
                                substitute("Daytime CO"[2] *
                                             " influx (" *
                                             mu *
@@ -155,7 +155,7 @@ plan  <-  drake::drake_plan(
                                               list(a = chemf("NH4+")))),
 
   # Tables -----------------------------------------------
-  ed_table_1 = make_ed_table_1(baci_co2, baci_nutrients),
+  ed_table_1 = make_ed_table_1(ba_co2, ba_nutrients),
   ed_table_2 = make_ed_table_2(stan_output),
   sp_table_1 = make_sp_table_1(resid_brm_model)
 )

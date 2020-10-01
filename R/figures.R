@@ -1104,17 +1104,17 @@ ed_fig_11 <- function(data, phy_png, zoo_png, my_cols_treatment) {
 #######################
 make_sp_fig_inorganic <- function(dest, fig_out_folder, model_list, vrb, ...) {
   mod <- model_list[[vrb]]
-  ggplot2::ggsave(dest, make_baci_plots(mod, ...), device = "pdf", width = 14,
+  ggplot2::ggsave(dest, make_ba_plots(mod, ...), device = "pdf", width = 14,
                   height = 7, units = "in", onefile = FALSE)
 }
 
 make_sp_fig_4 <- function(dest, fig_out_folder, mod, ...) {
   names(mod$data)[1] <- "y"
-  ggplot2::ggsave(dest, make_baci_plots(mod, ...), device = "pdf", width = 14,
+  ggplot2::ggsave(dest, make_ba_plots(mod, ...), device = "pdf", width = 14,
                   height = 7, units = "in", onefile = FALSE)
 }
 
-make_baci_plots <- function(mod, x_lab, my_cols_treatment) {
+make_ba_plots <- function(mod, x_lab, my_cols_treatment) {
   a <- mod$data %>%
     dplyr::select(period, treatment) %>%
     dplyr::distinct() %>%

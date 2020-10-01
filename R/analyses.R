@@ -335,7 +335,7 @@ run_cn_model <- function(data) {
        mod_zoo = mod_zoo)
 }
 
-run_baci_co2 <- function(data) {
+run_ba_co2 <- function(data) {
   brms::brm(influx ~ period * treatment + (1 | pond),
             data = data, chains = 4, cores = 4,
             iter = 3e4, warmup = 25e3,
@@ -351,7 +351,7 @@ run_permanova_community <- function(data) {
   list(out = vegan::adonis(bc_all ~ treat_rest, permutations = 1e3))
 }
 
-run_baci_nutrients <- function(data) {
+run_ba_nutrients <- function(data) {
   data <- data %>%
     dplyr::filter(sample_date != as.Date("2013-07-16") & treatment != "C") %>%
     dplyr::mutate(period = ifelse(sample_date >= as.Date("2013-07-09") &
@@ -361,7 +361,7 @@ run_baci_nutrients <- function(data) {
   chosen_vars <- c("NO2_uM", "NO3_uM", "NH3_uM")
   model <- brms::brm(y ~ period * treatment + (1 | pond),
                      data = data, chains = 0)
-  baci_models <- plyr::llply(chosen_vars, function(x, data, model) {
+  ba_models <- plyr::llply(chosen_vars, function(x, data, model) {
     data$y <- data[[x]]
     data <- data %>%
       dplyr::select(y, period, treatment, pond) %>%
@@ -372,8 +372,8 @@ run_baci_nutrients <- function(data) {
            control = list(adapt_delta = 0.99,
                           max_treedepth = 20))
   }, data = data, model = model)
-  names(baci_models) <- chosen_vars
-  baci_models
+  names(ba_models) <- chosen_vars
+  ba_models
 }
 
 make_params_summary <- function(data) {

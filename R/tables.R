@@ -32,11 +32,11 @@ make_proto_ed_tab_1 <- function(brmsmodel, sgnf = 2, title) {
   ed_tab
 }
 
-make_ed_table_1 <- function(baci_co2, baci_nutrients) {
-ed_tab_1 <- rbind(make_proto_ed_tab_1(baci_nutrients$NO2_uM, title = "\\textit{\\textbf{\\ce{NO2^-}}}"),
-                  make_proto_ed_tab_1(baci_nutrients$NO3_uM, title = "\\textit{\\textbf{\\ce{NO3^-}}}"),
-                  make_proto_ed_tab_1(baci_nutrients$NH3_uM, title = "\\textit{\\textbf{\\ce{NH4^+}}}"),
-                  make_proto_ed_tab_1(baci_co2, sgnf = 0, "\\textit{\\textbf{CO\\textsubscript{2} influx}}"))
+make_ed_table_1 <- function(ba_co2, ba_nutrients) {
+ed_tab_1 <- rbind(make_proto_ed_tab_1(ba_nutrients$NO2_uM, title = "\\textit{\\textbf{\\ce{NO2^-}}}"),
+                  make_proto_ed_tab_1(ba_nutrients$NO3_uM, title = "\\textit{\\textbf{\\ce{NO3^-}}}"),
+                  make_proto_ed_tab_1(ba_nutrients$NH3_uM, title = "\\textit{\\textbf{\\ce{NH4^+}}}"),
+                  make_proto_ed_tab_1(ba_co2, sgnf = 0, "\\textit{\\textbf{CO\\textsubscript{2} influx}}"))
 
 ed_tab_1 <- ed_tab_1 %>%
     knitr::kable(format = "latex", escape = FALSE)
