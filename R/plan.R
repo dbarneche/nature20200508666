@@ -155,7 +155,17 @@ plan  <-  drake::drake_plan(
                                                list(a = chemf("NH4+")))),
 
   # Tables -----------------------------------------------
-  ed_table_1 = make_ed_table_1(stan_output),
-  sp_table_1 = make_sp_table_1(ba_co2, ba_nutrients),
-  sp_table_2 = make_sp_table_2(resid_brm_model)
+  tab_out_folder = {
+    dir.create("output/tables/", recursive = TRUE, showWarnings = FALSE)
+    "output/tables"
+  },
+  ed_table_1 = {
+    make_ed_table_1(stan_output, tab_out_folder, "ed_table_1.csv")
+  },
+  sp_table_1 = {
+    make_sp_table_1(ba_co2, ba_nutrients, tab_out_folder, "sp_table_1.csv")
+  },
+  sp_table_2 = {
+    make_sp_table_2(resid_brm_model, tab_out_folder, "sp_table_2.csv")
+  }
 )

@@ -4,7 +4,16 @@ organise_fits <- function(brmsmodel) {
     dplyr::arrange(treatment, desc(period))
 }
 
-make_ed_table_1 <- function(stan_output) {
+export_csv <- function(object, tab_out_folder, out_file, verbose = TRUE) {
+  out_path <- file.path(tab_out_folder, out_file)
+  if (verbose) {
+    message("Saving ", out_path, " to file")
+  }
+  write.csv(object, out_path, row.names = FALSE)
+  object
+}
+
+make_ed_table_1 <- function(stan_output, ...) {
   group_tables <- plyr::llply(names(stan_output), function(x, model) {
     out_names <- c("ln_ka_amb", "logit_ke_amb",
                    "logit_phi_amb", "ln_ka_war",
@@ -47,7 +56,8 @@ make_ed_table_1 <- function(stan_output) {
                       "sigma_Delta_logit_phi")
   out %>%
     dplyr::mutate(Parameter = row.names(.)) %>%
-    dplyr::select(Parameter, tidyselect::everything())
+    dplyr::select(Parameter, tidyselect::everything()) %>%
+    export_csv(...)
 }
 
 make_proto_sp_tab_1 <- function(brmsmodel, sgnf = 2, title) {
@@ -73,14 +83,15 @@ make_proto_sp_tab_1 <- function(brmsmodel, sgnf = 2, title) {
   sp_tab
 }
 
-make_sp_table_1 <- function(ba_co2, ba_nutrients) {
+make_sp_table_1 <- function(ba_co2, ba_nutrients, ...) {
   rbind(make_proto_sp_tab_1(ba_nutrients$NO2_uM, title = "NO2-"),
         make_proto_sp_tab_1(ba_nutrients$NO3_uM, title = "NO3-"),
         make_proto_sp_tab_1(ba_nutrients$NH3_uM, title = "NH4+"),
-        make_proto_sp_tab_1(ba_co2, sgnf = 0, "CO_2 influx"))
+        make_proto_sp_tab_1(ba_co2, sgnf = 0, "CO_2 influx")) %>%
+    export_csv(...)
 }
 
-make_sp_table_2 <- function(resid_brm_model) {
+make_sp_table_2 <- function(resid_brm_model, ...) {
   rounded <- function(value, precision = 1) {
     sprintf(paste0("%.", precision, "f"), round(value, precision))
   }
@@ -103,5 +114,6 @@ make_sp_table_2 <- function(resid_brm_model) {
     dplyr::mutate(Taxon = c("Phytoplankton",
                             "", "", "",
                             "Zooplankton",
-                            "", "", ""))
+                            "", "", "")) %>%
+    export_csv(...)
 }
