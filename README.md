@@ -10,6 +10,12 @@ This repository contains code and data needed to reproduce the article:
 
 **Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G**, Warming impairs trophic transfer efficiency in a long-term field experiment (provisionally accepted)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4468371.svg)](https://doi.org/10.5281/zenodo.4468371)
+
+When using the data or code from this project, please cite it as:
+
+**Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G** (2021) dbarneche/nature20200508666: Accepted version of paper data and code of manuscript: Warming impairs trophic transfer efficiency in a long-term field experiment (Nature). Zenodo. doi: 10.5281/zenodo.4468371
+
 ## Instructions
 
 All processing was done in `R`. This routine uses the [drake R package](https://github.com/ropensci/drake) to compile the output time table. First install `drake`:
