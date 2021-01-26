@@ -1,4 +1,4 @@
-# Warming decreases trophic transfer efficiency in a long-term field experiment
+# Warming impairs trophic transfer efficiency in a long-term field experiment
 
 [![license](https://img.shields.io/badge/license-MIT%20+%20file%20LICENSE-lightgrey.svg)](https://choosealicense.com/)
 [![Ask Us Anything
@@ -8,7 +8,7 @@ Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)
 
 This repository contains code and data needed to reproduce the article:
 
-**Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G**, Warming decreases trophic transfer efficiency in a long-term field experiment (in review)
+**Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G**, Warming impairs trophic transfer efficiency in a long-term field experiment (provisionally accepted)
 
 ## Instructions
 

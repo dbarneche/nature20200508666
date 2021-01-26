@@ -769,161 +769,12 @@ ed_fig_6 <- function(post_effs, diff_biomass, phy_png, zoo_png) {
 }
 
 make_ed_fig_7 <- function(dest, fig_out_folder, ...) {
-  ggplot2::ggsave(dest, ed_fig_7(...), device = "pdf", width = 7,
-                  height = 7, units = "in", onefile = FALSE)
-}
-
-ed_fig_7 <- function(community_data_2012, community_data_2016,
-                     size_data_2012, size_data_2016,
-                     my_cols_treatment) {
-  ed_fig_7_bxpl <- function(data, my_cols_treatment, title) {
-    cols <- rev(my_cols_treatment)
-    ggplot(data = data, mapping = aes(y = log_av_C_ug, x = treatment)) +
-      geom_boxplot(mapping = aes(colour = treatment),
-                   position = position_dodge(0),
-                   fill = cols,
-                   show.legend = FALSE,
-                   width = 0.7,
-                   size = 0.3,
-                   outlier.shape = NA) +
-      geom_point(mapping = aes(fill = treatment,
-                               shape = treatment),
-                 colour = "black",
-                 position = position_jitterdodge(jitter.width = 0.4,
-                                                 dodge.width = 0,
-                                                 seed = 1),
-                 size = 2.5,
-                 show.legend = FALSE) +
-      scale_colour_manual(values = rep("black", 4)) +
-      scale_fill_manual(values = cols) +
-      scale_shape_manual(values = c(24, 25)) +
-      labs(x = "Treatment",
-           y = expression(log[10]~Organism~mass~(µg~C))) +
-      theme_classic() +
-      theme(plot.title = element_text(face = "bold")) +
-      ggtitle(title) +
-      scale_x_discrete(labels = c("Ambient", "Warmed"))
-  }
-
-  ed_fig_7_nmds <- function(data, my_cols_treatment, tlab) {
-    treat_rest <- data$treatment
-    data <- data %>%
-      dplyr::select(-pond, -treatment)
-    bc_mds <- vegan::metaMDS(data, distance = "bray",
-                             trace = FALSE, autotransform = FALSE,
-                             k = 2)
-    ponds <- data.frame(bc_mds$points) %>%
-      dplyr::mutate(treat = treat_rest,
-                    shape = ifelse(treat == "H", 25, 24))
-    species <- data.frame(bc_mds$species) %>%
-      dplyr::arrange(MDS1) %>%
-      tidyr::drop_na()
-    spp_h <- head(species, 4)
-    spp_a <- tail(species, 4)
-    spp <- rbind(spp_h, spp_a) %>%
-      dplyr::mutate(treat = rep(c("H", "A"), each = 4),
-                    shape = rep(c(25, 24), each = 4))
-    treat_a <- ponds[ponds$treat == "A", ][chull(ponds[ponds$treat == "A",
-                                                       c("MDS1", "MDS2")]), ]
-    treat_h <- ponds[ponds$treat == "H", ][chull(ponds[ponds$treat == "H",
-                                                       c("MDS1", "MDS2")]), ]
-    hull_data <- rbind(treat_a, treat_h)
-
-    ggplot() +
-      geom_point(data = ponds,
-                 mapping = aes(x = MDS1,
-                               y = MDS2,
-                               fill = treat),
-                 size = 3,
-                 shape = ponds$shape) +
-      geom_point(data = species,
-                 mapping = aes(x = MDS1,
-                               y = MDS2,
-                               alpha = 0.001),
-                 size = 1.5) +
-      geom_point(data = spp,
-                 mapping = aes(x = MDS1,
-                               y = MDS2,
-                               alpha = 0.001),
-                 size = 5,
-                 shape = spp$shape) +
-      geom_polygon(data = hull_data,
-                   mapping = aes(x = MDS1,
-                                 y = MDS2,
-                                 fill = treat,
-                                 group = treat),
-                   alpha = 0.30) +
-      scale_colour_manual(values = rev(my_cols_treatment)) +
-      scale_fill_manual(values = rev(my_cols_treatment)) +
-      scale_shape_manual(values = c(21, 21)) +
-      labs(x = "NMDS1", y = "NMDS2") +
-      theme_classic() +
-      ggtitle(tlab) +
-      theme(legend.position = "none",
-            plot.title = element_text(face = "bold"))
-  }
-  nmds_2012 <- ed_fig_7_nmds(community_data_2012,
-                             my_cols_treatment,
-                             "a (2012)") +
-      geom_text(mapping = aes(x = -1, y = -1,
-                label = "Stress = 0.12",
-                size = 5), hjust = 0) +
-    scale_y_continuous(limits = c(-1, 1),
-                       breaks = c(-1, -0.5, 0, 0.5, 1))
-  nmds_2016 <- ed_fig_7_nmds(community_data_2016,
-                             my_cols_treatment,
-                             "b (2016)") +
-    geom_text(mapping = aes(x = -1.1, y = -1.8,
-              label = "Stress = 0.05",
-              size = 5), hjust = 0) +
-    scale_y_continuous(limits = c(-1.8, 2),
-                       breaks = c(-1.8, -0.9, 0, 0.9, 1.8))
-  bxpl_2012 <- ed_fig_7_bxpl(size_data_2012, my_cols_treatment, "c (2012)") +
-    scale_y_continuous(limits = c(-4.8, -2.4),
-                       breaks = c(-4.8, -3.8, -2.8))
-  bxpl_2016 <- ed_fig_7_bxpl(size_data_2016, my_cols_treatment, "d (2016)") +
-    scale_y_continuous(limits = c(-4.8, -3.5),
-                       breaks = c(-4.8, -4.2, -3.8))
-  gridExtra::grid.arrange(nmds_2012, nmds_2016,
-                          bxpl_2012, bxpl_2016, ncol = 2)
-}
-
-make_ed_fig_8 <- function(dest, fig_out_folder, ...) {
-  ggplot2::ggsave(dest, ed_fig_8(...), device = "pdf", width = 6.3,
-                  height = 3.76, units = "in", onefile = FALSE)
-}
-
-ed_fig_8 <- function(data, my_cols_treatment) {
-  data <- data %>%
-    dplyr::mutate(shape = ifelse(treat == "H", 25, 24))
-  ggplot(data = data) +
-    geom_line(mapping = aes(x = doy,
-                            y = ratio_fits,
-                            colour = treat,
-                            linetype = treat)) +
-    scale_colour_manual(values = rev(my_cols_treatment)) +
-    scale_fill_manual(values = rev(my_cols_treatment)) +
-    geom_point(mapping = aes(x = doy,
-                             y = ER.GPP,
-                             colour = treat,
-                             fill = treat),
-               alpha = 0.3,
-               shape = data$shape) +
-    cowplot::theme_cowplot(font_size = 12) +
-    theme(legend.position = "none") +
-    facet_wrap(~ year, scales = "fixed") +
-    theme(strip.background = element_blank()) +
-    xlab("Day of the Year") +
-    ylab(expression(R[eco] / GPP))
-}
-
-make_ed_fig_9 <- function(dest, fig_out_folder, ...) {
   pdf(dest, width = 9, height = 2.8)
-  ed_fig_9(...)
+  ed_fig_7(...)
   dev.off()
 }
 
-ed_fig_9 <- function(control_data, my_cols_group) {
+ed_fig_7 <- function(control_data, my_cols_group) {
   ponds <- unique(control_data$pond)
   par(mfrow = c(1, 3),
       omi = c(0, 0.5, 0, 0),
@@ -959,12 +810,12 @@ ed_fig_9 <- function(control_data, my_cols_group) {
   }
 }
 
-make_ed_fig_10 <- function(dest, fig_out_folder, ...) {
-  ggplot2::ggsave(dest, ed_fig_10(...), device = "pdf", width = 3.87,
+make_ed_fig_8 <- function(dest, fig_out_folder, ...) {
+  ggplot2::ggsave(dest, ed_fig_8(...), device = "pdf", width = 3.87,
                   height = 5.46, units = "in", onefile = FALSE)
 }
 
-ed_fig_10 <- function(data, phy_png, zoo_png, my_cols_treatment) {
+ed_fig_8 <- function(data, phy_png, zoo_png, my_cols_treatment) {
   cols <- rep(c(my_cols_treatment[2], my_cols_treatment[1]), 2)
   data <- data %>%
     dplyr::group_by(sample, pond, treatment) %>%
@@ -1035,12 +886,12 @@ ed_fig_10 <- function(data, phy_png, zoo_png, my_cols_treatment) {
                         xmax = 2.5))
 }
 
-make_ed_fig_11 <- function(dest, fig_out_folder, ...) {
-  ggplot2::ggsave(dest, ed_fig_11(...), device = "pdf", width = 3.87,
+make_ed_fig_9 <- function(dest, fig_out_folder, ...) {
+  ggplot2::ggsave(dest, ed_fig_9(...), device = "pdf", width = 3.87,
                   height = 5.46, units = "in", onefile = FALSE)
 }
 
-ed_fig_11 <- function(data, phy_png, zoo_png, my_cols_treatment) {
+ed_fig_9 <- function(data, phy_png, zoo_png, my_cols_treatment) {
   cols <- rep(c(my_cols_treatment[2], my_cols_treatment[1]), 2)
   a <- ggplot(data = data, mapping = aes(y = mean, x = treatment)) +
     geom_rect(mapping = aes(xmin = -Inf, xmax = Inf,
@@ -1488,11 +1339,160 @@ sp_fig_7 <- function(hierarchical_biomass, phy_png,
 }
 
 make_sp_fig_8 <- function(dest, fig_out_folder, ...) {
-  ggplot2::ggsave(dest, sp_fig_8(...), device = "pdf", width = 5.82,
+  ggplot2::ggsave(dest, sp_fig_8(...), device = "pdf", width = 7,
+                  height = 7, units = "in", onefile = FALSE)
+}
+
+sp_fig_8 <- function(community_data_2012, community_data_2016,
+                     size_data_2012, size_data_2016,
+                     my_cols_treatment) {
+  sp_fig_8_bxpl <- function(data, my_cols_treatment, title) {
+    cols <- rev(my_cols_treatment)
+    ggplot(data = data, mapping = aes(y = log_av_C_ug, x = treatment)) +
+      geom_boxplot(mapping = aes(colour = treatment),
+                   position = position_dodge(0),
+                   fill = cols,
+                   show.legend = FALSE,
+                   width = 0.7,
+                   size = 0.3,
+                   outlier.shape = NA) +
+      geom_point(mapping = aes(fill = treatment,
+                               shape = treatment),
+                 colour = "black",
+                 position = position_jitterdodge(jitter.width = 0.4,
+                                                 dodge.width = 0,
+                                                 seed = 1),
+                 size = 2.5,
+                 show.legend = FALSE) +
+      scale_colour_manual(values = rep("black", 4)) +
+      scale_fill_manual(values = cols) +
+      scale_shape_manual(values = c(24, 25)) +
+      labs(x = "Treatment",
+           y = expression(log[10]~Organism~mass~(µg~C))) +
+      theme_classic() +
+      theme(plot.title = element_text(face = "bold")) +
+      ggtitle(title) +
+      scale_x_discrete(labels = c("Ambient", "Warmed"))
+  }
+
+  sp_fig_8_nmds <- function(data, my_cols_treatment, tlab) {
+    treat_rest <- data$treatment
+    data <- data %>%
+      dplyr::select(-pond, -treatment)
+    bc_mds <- vegan::metaMDS(data, distance = "bray",
+                             trace = FALSE, autotransform = FALSE,
+                             k = 2)
+    ponds <- data.frame(bc_mds$points) %>%
+      dplyr::mutate(treat = treat_rest,
+                    shape = ifelse(treat == "H", 25, 24))
+    species <- data.frame(bc_mds$species) %>%
+      dplyr::arrange(MDS1) %>%
+      tidyr::drop_na()
+    spp_h <- head(species, 4)
+    spp_a <- tail(species, 4)
+    spp <- rbind(spp_h, spp_a) %>%
+      dplyr::mutate(treat = rep(c("H", "A"), each = 4),
+                    shape = rep(c(25, 24), each = 4))
+    treat_a <- ponds[ponds$treat == "A", ][chull(ponds[ponds$treat == "A",
+                                                       c("MDS1", "MDS2")]), ]
+    treat_h <- ponds[ponds$treat == "H", ][chull(ponds[ponds$treat == "H",
+                                                       c("MDS1", "MDS2")]), ]
+    hull_data <- rbind(treat_a, treat_h)
+
+    ggplot() +
+      geom_point(data = ponds,
+                 mapping = aes(x = MDS1,
+                               y = MDS2,
+                               fill = treat),
+                 size = 3,
+                 shape = ponds$shape) +
+      geom_point(data = species,
+                 mapping = aes(x = MDS1,
+                               y = MDS2,
+                               alpha = 0.001),
+                 size = 1.5) +
+      geom_point(data = spp,
+                 mapping = aes(x = MDS1,
+                               y = MDS2,
+                               alpha = 0.001),
+                 size = 5,
+                 shape = spp$shape) +
+      geom_polygon(data = hull_data,
+                   mapping = aes(x = MDS1,
+                                 y = MDS2,
+                                 fill = treat,
+                                 group = treat),
+                   alpha = 0.30) +
+      scale_colour_manual(values = rev(my_cols_treatment)) +
+      scale_fill_manual(values = rev(my_cols_treatment)) +
+      scale_shape_manual(values = c(21, 21)) +
+      labs(x = "NMDS1", y = "NMDS2") +
+      theme_classic() +
+      ggtitle(tlab) +
+      theme(legend.position = "none",
+            plot.title = element_text(face = "bold"))
+  }
+  nmds_2012 <- sp_fig_8_nmds(community_data_2012,
+                             my_cols_treatment,
+                             "a (2012)") +
+      geom_text(mapping = aes(x = -1, y = -1,
+                label = "Stress = 0.12",
+                size = 5), hjust = 0) +
+    scale_y_continuous(limits = c(-1, 1),
+                       breaks = c(-1, -0.5, 0, 0.5, 1))
+  nmds_2016 <- sp_fig_8_nmds(community_data_2016,
+                             my_cols_treatment,
+                             "b (2016)") +
+    geom_text(mapping = aes(x = -1.1, y = -1.8,
+              label = "Stress = 0.05",
+              size = 5), hjust = 0) +
+    scale_y_continuous(limits = c(-1.8, 2),
+                       breaks = c(-1.8, -0.9, 0, 0.9, 1.8))
+  bxpl_2012 <- sp_fig_8_bxpl(size_data_2012, my_cols_treatment, "c (2012)") +
+    scale_y_continuous(limits = c(-4.8, -2.4),
+                       breaks = c(-4.8, -3.8, -2.8))
+  bxpl_2016 <- sp_fig_8_bxpl(size_data_2016, my_cols_treatment, "d (2016)") +
+    scale_y_continuous(limits = c(-4.8, -3.5),
+                       breaks = c(-4.8, -4.2, -3.8))
+  gridExtra::grid.arrange(nmds_2012, nmds_2016,
+                          bxpl_2012, bxpl_2016, ncol = 2)
+}
+
+make_sp_fig_9 <- function(dest, fig_out_folder, ...) {
+  ggplot2::ggsave(dest, sp_fig_9(...), device = "pdf", width = 6.3,
+                  height = 3.76, units = "in", onefile = FALSE)
+}
+
+sp_fig_9 <- function(data, my_cols_treatment) {
+  data <- data %>%
+    dplyr::mutate(shape = ifelse(treat == "H", 25, 24))
+  ggplot(data = data) +
+    geom_line(mapping = aes(x = doy,
+                            y = ratio_fits,
+                            colour = treat,
+                            linetype = treat)) +
+    scale_colour_manual(values = rev(my_cols_treatment)) +
+    scale_fill_manual(values = rev(my_cols_treatment)) +
+    geom_point(mapping = aes(x = doy,
+                             y = ER.GPP,
+                             colour = treat,
+                             fill = treat),
+               alpha = 0.3,
+               shape = data$shape) +
+    cowplot::theme_cowplot(font_size = 12) +
+    theme(legend.position = "none") +
+    facet_wrap(~ year, scales = "fixed") +
+    theme(strip.background = element_blank()) +
+    xlab("Day of the Year") +
+    ylab(expression(R[eco] / GPP))
+}
+
+make_sp_fig_10 <- function(dest, fig_out_folder, ...) {
+  ggplot2::ggsave(dest, sp_fig_10(...), device = "pdf", width = 5.82,
                   height = 2.95, units = "in", onefile = FALSE)
 }
 
-sp_fig_8 <- function(pp_means, phy_png, zoo_png, my_cols_treatment) {
+sp_fig_10 <- function(pp_means, phy_png, zoo_png, my_cols_treatment) {
   make_curve <- function(days, ln_ka, logit_ke, logit_phi) {
     ka <- exp(ln_ka)
     ke <- 1 / (1 + exp(-logit_ke))
@@ -1637,7 +1637,7 @@ sp_fig_8 <- function(pp_means, phy_png, zoo_png, my_cols_treatment) {
                         xmax = 63))
 }
 
-make_sp_fig_9_11 <- function(dest, fig_out_folder, ...) {
+make_sp_fig_11_13 <- function(dest, fig_out_folder, ...) {
   ggplot2::ggsave(dest, supp_resid_figure(...), device = "pdf", width = 10.5,
                   height = 7.86, units = "in", onefile = FALSE)
 }

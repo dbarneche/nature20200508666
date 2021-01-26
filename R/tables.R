@@ -4,37 +4,7 @@ organise_fits <- function(brmsmodel) {
     dplyr::arrange(treatment, desc(period))
 }
 
-make_proto_ed_tab_1 <- function(brmsmodel, sgnf = 2, title) {
-  cols <- c("Estimate", "l-95% CI", "u-95% CI", "Bulk_ESS", "Rhat")
-  random <- summary(brmsmodel)$random$pond[, cols]
-  fixed <- cbind(organise_fits(brmsmodel)[, 3:5],
-                 summary(brmsmodel)$fixed[c(2, 1, 4, 3), cols[4:5]])
-  colnames(fixed) <- cols
-  ed_tab <- rbind(random, fixed)
-  ed_tab[, cols[4:5]] <- round(ed_tab[, cols[4:5]])
-  ed_tab[, cols[1:3]] <- round(ed_tab[, cols[1:3]], sgnf)
-  empty <- matrix(rep("", 5), 1, 5)
-  colnames(empty) <- cols
-  ed_tab <- rbind(empty,
-                  ed_tab) %>%
-    as.matrix()
-  rownames(ed_tab) <- c(title,
-                        "Pond-level (SD)",
-                        c("Before, Ambient",
-                          "After, Ambient",
-                          "Before, Warmed",
-                          "After, Warmed"))
-  ed_tab
-}
-
-make_ed_table_1 <- function(ba_co2, ba_nutrients) {
-  rbind(make_proto_ed_tab_1(ba_nutrients$NO2_uM, title = "NO2-"),
-        make_proto_ed_tab_1(ba_nutrients$NO3_uM, title = "NO3-"),
-        make_proto_ed_tab_1(ba_nutrients$NH3_uM, title = "NH4+"),
-        make_proto_ed_tab_1(ba_co2, sgnf = 0, "CO_2 influx"))
-}
-
-make_ed_table_2 <- function(stan_output) {
+make_ed_table_1 <- function(stan_output) {
   group_tables <- plyr::llply(names(stan_output), function(x, model) {
     out_names <- c("ln_ka_amb", "logit_ke_amb",
                    "logit_phi_amb", "ln_ka_war",
@@ -80,7 +50,37 @@ make_ed_table_2 <- function(stan_output) {
     dplyr::select(Parameter, tidyselect::everything())
 }
 
-make_sp_table_1 <- function(resid_brm_model) {
+make_proto_sp_tab_1 <- function(brmsmodel, sgnf = 2, title) {
+  cols <- c("Estimate", "l-95% CI", "u-95% CI", "Bulk_ESS", "Rhat")
+  random <- summary(brmsmodel)$random$pond[, cols]
+  fixed <- cbind(organise_fits(brmsmodel)[, 3:5],
+                 summary(brmsmodel)$fixed[c(2, 1, 4, 3), cols[4:5]])
+  colnames(fixed) <- cols
+  sp_tab <- rbind(random, fixed)
+  sp_tab[, cols[4:5]] <- round(sp_tab[, cols[4:5]])
+  sp_tab[, cols[1:3]] <- round(sp_tab[, cols[1:3]], sgnf)
+  empty <- matrix(rep("", 5), 1, 5)
+  colnames(empty) <- cols
+  sp_tab <- rbind(empty,
+                  sp_tab) %>%
+    as.matrix()
+  rownames(sp_tab) <- c(title,
+                        "Pond-level (SD)",
+                        c("Before, Ambient",
+                          "After, Ambient",
+                          "Before, Warmed",
+                          "After, Warmed"))
+  sp_tab
+}
+
+make_sp_table_1 <- function(ba_co2, ba_nutrients) {
+  rbind(make_proto_sp_tab_1(ba_nutrients$NO2_uM, title = "NO2-"),
+        make_proto_sp_tab_1(ba_nutrients$NO3_uM, title = "NO3-"),
+        make_proto_sp_tab_1(ba_nutrients$NH3_uM, title = "NH4+"),
+        make_proto_sp_tab_1(ba_co2, sgnf = 0, "CO_2 influx"))
+}
+
+make_sp_table_2 <- function(resid_brm_model) {
   rounded <- function(value, precision = 1) {
     sprintf(paste0("%.", precision, "f"), round(value, precision))
   }
