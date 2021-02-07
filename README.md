@@ -32,7 +32,7 @@ To reproduce particular targets outlined in `R/plan.R`, do e.g.:
 
 ```r
 source("_drake.R")
-drake::make(plan, targets = c("fig_1_pdf", "fig_2_pdf", "ed_table_2"), lock_envir = FALSE)
+drake::make(plan, targets = c("fig_1_pdf", "fig_2_pdf", "ed_table_1"), lock_envir = FALSE)
 ```
 
 This will create Figures 1 and 2, and Extended Data Table 2 as presented in the manuscript along with all its dependencies. All output will be automatically placed in a directory called `output` (it is going to be automatically created for you).
