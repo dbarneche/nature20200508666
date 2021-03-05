@@ -8,7 +8,7 @@ Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)
 
 This repository contains code and data needed to reproduce the article:
 
-**Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G**, Warming impairs trophic transfer efficiency in a long-term field experiment (provisionally accepted)
+**Barneche DR, Hulatt CJ, Dossena M, Padfield D, Woodward G, Trimmer M, Yvon-Durocher G** (2021) Warming impairs trophic transfer efficiency in a long-term field experiment. *Nature*, online early. DOI: [10.1038/s41586-021-03352-2](https://doi.org/10.1038/s41586-021-03352-2)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4468371.svg)](https://doi.org/10.5281/zenodo.4468371)
 
