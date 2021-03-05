@@ -788,7 +788,7 @@ ed_fig_7 <- function(control_data, my_cols_group) {
     x <- control_data %>%
       dplyr::filter(pond == ponds[i])
     if (i == 1) {
-      ylab <- substitute(""^15 * "N"["%"])
+      ylab <- substitute("Excess "^15 * "N"["%"] * ", " * chi)
     } else {
       ylab <- ""
     }
